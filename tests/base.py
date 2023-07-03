@@ -39,10 +39,14 @@ class LogMonitorTestCase(unittest.TestCase):
     def setUp(self):
         self.app = create_app({"TESTING": True, "LOG_DIRECTORY": LOG_DIRECTORY})
         self.client = self.app.test_client()
+        self.db_fd = None
+        self.full_path = None
 
     def tearDown(self):
-        os.close(self.db_fd)
-        os.unlink(self.full_path)
+        if self.db_fd:
+            os.close(self.db_fd)
+        if self.full_path:
+            os.unlink(self.full_path)
 
     def create_log_file_with_lines(self, lines: list[str]) -> str:
         self.db_fd, self.full_path = tempfile.mkstemp(dir=LOG_DIRECTORY)
