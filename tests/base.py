@@ -1,7 +1,12 @@
 import unittest
 import os
 import tempfile
+from pathlib import Path
+
+from flask import Response
+
 from app import create_app
+from constants import LOG_DIRECTORY
 
 
 class LogMonitorTestCase(unittest.TestCase):
@@ -31,8 +36,8 @@ class LogMonitorTestCase(unittest.TestCase):
     """
 
     def setUp(self):
-        self.db_fd, self.log_file_name = tempfile.mkstemp()
-        self.app = create_app({"TESTING": True, "LOG_DIRECTORY": "/tmp/test_logs"})
+        self.db_fd, self.log_file_name = tempfile.mkstemp(dir=LOG_DIRECTORY)
+        self.app = create_app({"TESTING": True, "LOG_DIRECTORY": LOG_DIRECTORY})
         self.client = self.app.test_client()
 
     def tearDown(self):
@@ -40,13 +45,19 @@ class LogMonitorTestCase(unittest.TestCase):
         os.unlink(self.log_file_name)
 
     @staticmethod
-    def create_log_file_with_lines(lines):
-        db_fd, log_file_name = tempfile.mkstemp()
-        with open(log_file_name, "w") as f:
-            for line in lines:
-                f.write(f"{line}\n")
+    def create_log_file_with_lines(lines: list[str]) -> str:
+        db_fd, full_path = tempfile.mkstemp(dir=LOG_DIRECTORY)
+        with open(full_path, "w") as f:
+            for index, line in enumerate(lines):
+                if index == len(lines) - 1:
+                    f.write(line)
+                else:
+                    f.write(f"{line}\n")
+        log_file_name = Path(full_path).name
         return log_file_name
 
-    def make_request_to_endpoint(self, endpoint, params={}):
+    def make_request_to_endpoint(self, endpoint: str, params: dict = None) -> Response:
+        if params is None:
+            params = {}
         with self.app.test_client() as client:
             return client.get(endpoint, query_string=params)

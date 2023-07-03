@@ -11,7 +11,7 @@ from app_utils import (
 )
 
 
-def get_logs() -> Response:
+def get_logs() -> tuple[Response, HTTPStatus]:
     filename = request.args.get("filename", default="syslog", type=str)
     search_term = request.args.get("term", default="", type=str)
     lines_limit = request.args.get("limit", default=50, type=int)
