@@ -26,6 +26,7 @@ class LogMonitorTestCase(unittest.TestCase):
         client: A test client for the application. This can be used to send
             requests to the application.
         db_fd: A file descriptor for the temporary file.
+        full_path: The full path to the temporary file.
         log_file_name: The name of the temporary file.
 
     How to use this class:
@@ -36,25 +37,23 @@ class LogMonitorTestCase(unittest.TestCase):
     """
 
     def setUp(self):
-        self.db_fd, self.log_file_name = tempfile.mkstemp(dir=LOG_DIRECTORY)
         self.app = create_app({"TESTING": True, "LOG_DIRECTORY": LOG_DIRECTORY})
         self.client = self.app.test_client()
 
     def tearDown(self):
         os.close(self.db_fd)
-        os.unlink(self.log_file_name)
+        os.unlink(self.full_path)
 
-    @staticmethod
-    def create_log_file_with_lines(lines: list[str]) -> str:
-        db_fd, full_path = tempfile.mkstemp(dir=LOG_DIRECTORY)
-        with open(full_path, "w") as f:
+    def create_log_file_with_lines(self, lines: list[str]) -> str:
+        self.db_fd, self.full_path = tempfile.mkstemp(dir=LOG_DIRECTORY)
+        with open(self.full_path, "w") as f:
             for index, line in enumerate(lines):
                 if index == len(lines) - 1:
                     f.write(line)
                 else:
                     f.write(f"{line}\n")
-        log_file_name = Path(full_path).name
-        return log_file_name
+        self.log_file_name = Path(self.full_path).name
+        return self.log_file_name
 
     def make_request_to_endpoint(self, endpoint: str, params: dict = None) -> Response:
         if params is None:
