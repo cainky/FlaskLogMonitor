@@ -5,16 +5,26 @@ This project offers a solution for on-demand log monitoring across multiple unix
 ## Installation and Setup
 
 1. Install Python 3.9.
-2. Install the dependencies by running `pip install -r requirements.txt`.
-3. Run the server by using `python app.py`.
+2. [Install Poetry](https://python-poetry.org/docs/#installation) - Poetry is used for dependency management.
+
+```bash
+curl -sSL https://install.python-poetry.org | python -
+```
+3. Install the project dependencies
+```bash
+poetry install
+```
+
+4. Run the server
+```bash
+poetry run python app.py
+```
 
 
 ## Running the Tests
 
-Run the tests with the following command:
-
 ```bash
-python -m unittest tests
+poetry run python -m unittest discover
 ```
 
 ## Contributing
