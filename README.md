@@ -19,6 +19,7 @@ poetry install
 ```bash
 poetry run python app.py
 ```
+Alternatively you can use ```poetry shell``` to activate the environment and run python commands as you normally would: ```python app.py```
 
 
 ## Running the Tests
