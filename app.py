@@ -1,5 +1,5 @@
-from flask import Flask, jsonify, request
-import os
+from flask import Flask, jsonify, request, Response
+from os import path, getenv
 from http import HTTPStatus
 from constants import ErrorMessage
 from app_utils import (
@@ -12,20 +12,15 @@ from dotenv import load_dotenv
 
 # Load environment variables from .env file
 load_dotenv()
-IS_LOCAL = os.getenv("IS_LOCAL", "False") == "True"
+IS_LOCAL = getenv("IS_LOCAL", "False") == "True"
 LOG_DIRECTORY = "tests/var/log/" if IS_LOCAL else "/var/log/"
 
 
 app = Flask(__name__)
 
 
-@app.route("/", methods=["GET"])
-def hello():
-    return "Hello, World!"
-
-
 @app.route("/logs", methods=["GET"])
-def get_logs():
+def get_logs() -> Response:
     filename = request.args.get("filename", default="syslog", type=str)
     search_term = request.args.get("term", default="", type=str)
     lines_limit = request.args.get("limit", default=50, type=int)
@@ -47,7 +42,7 @@ def get_logs():
         )
 
     filepath = LOG_DIRECTORY + filename
-    if not os.path.isfile(filepath):
+    if not path.isfile(filepath):
         return (
             jsonify(error=f"File not found: {LOG_DIRECTORY}{filename} does not exist"),
             HTTPStatus.NOT_FOUND,
