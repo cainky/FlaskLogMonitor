@@ -1,4 +1,11 @@
+from dotenv import load_dotenv
+from os import getenv
 from enum import Enum
+
+# Load environment variables from .env file
+load_dotenv()
+IS_LOCAL = getenv("IS_LOCAL", "False") == "True"
+LOG_DIRECTORY = "tests/var/log/" if IS_LOCAL else "/var/log/"
 
 
 class ErrorMessage(Enum):

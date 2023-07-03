@@ -25,12 +25,13 @@ Alternatively you can use ```poetry shell``` to activate the environment and run
 ## Project Files and Directories
 ```
 .
-├── .env                # Environment variables for local development
+├── .env                # Environment variables
 ├── README.md           # This file
 ├── app.py              # The main application script
+├── views               # Request & response handling
 └── tests               # Tests for the app
     └── var
-        └── log         # Directory for local testing of log reading functionality
+        └── log         # Directory for local testing of logs
 ```
 #### `.env`
 Be sure to create this file for local testing and development.
@@ -55,7 +56,7 @@ This directory is used for local testing of the log reading functionality. When 
 ## Running the Tests
 
 ```bash
-poetry run python -m unittest discover
+poetry run python -m unittest
 ```
 
 ## Contributing
