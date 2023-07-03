@@ -1,6 +1,16 @@
-from re import search
+from flask import Request
 from typing import List, Tuple
 from os import SEEK_END
+
+from typing.io import IO
+
+
+def get_request_params(request: Request) -> Tuple[str, str, int]:
+    filename = request.args.get("filename", default="syslog", type=str)
+    search_term = request.args.get("term", default="", type=str)
+    lines_limit = request.args.get("limit", default=50, type=int)
+
+    return filename, search_term, lines_limit
 
 
 def is_filename_valid(filename: str) -> bool:
@@ -58,7 +68,7 @@ def get_file_lines(
 
     Args:
         filepath (str): Path to the file.
-        num_lines (int): Number of lines to retrieve from the end of the file.
+        num_lines_to_return (int): Number of lines to retrieve from the end of the file.
         search_term (str, optional): Term to filter lines. If None, no filtering is applied.
 
     Returns:
@@ -103,7 +113,7 @@ def tail(filename: str, lines_limit: int = 50, block_size: int = 1024) -> List[s
 
 
 def read_block(
-    file: object, block_end_byte: int, block_size: int
+    file: IO, block_end_byte: int, block_size: int
 ) -> Tuple[List[str], int]:
     """
     Reads a block from the end of a file and returns the lines in the block.
