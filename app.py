@@ -2,12 +2,18 @@ from flask import Flask, jsonify, request
 import os
 from http import HTTPStatus
 from constants import ErrorMessage
-from utils import (
+from app_utils import (
     get_file_lines,
     is_filename_valid,
     is_limit_valid,
     is_search_term_valid,
 )
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
+IS_LOCAL = os.getenv("IS_LOCAL", "False") == "True"
+LOG_DIRECTORY = "tests/var/log/" if IS_LOCAL else "/var/log/"
 
 
 app = Flask(__name__)
@@ -40,10 +46,10 @@ def get_logs():
             HTTPStatus.BAD_REQUEST,
         )
 
-    filepath = "var/log/" + filename
+    filepath = LOG_DIRECTORY + filename
     if not os.path.isfile(filepath):
         return (
-            jsonify(error=f"File not found: /var/log/{filename} does not exist"),
+            jsonify(error=f"File not found: {LOG_DIRECTORY}{filename} does not exist"),
             HTTPStatus.NOT_FOUND,
         )
 

@@ -10,6 +10,7 @@ python = "3.10.6"
 flask = "^2.3.2"
 requests = "^2.31.0"
 flask-testing = "^0.8.1"
+python-dotenv = "^1.0.0"
 
 
 [build-system]
