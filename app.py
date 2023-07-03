@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request, Response
+from flask import Flask, jsonify, request, Response, render_template
 from os import path, getenv
 from http import HTTPStatus
 from constants import ErrorMessage
@@ -17,6 +17,11 @@ LOG_DIRECTORY = "tests/var/log/" if IS_LOCAL else "/var/log/"
 
 
 app = Flask(__name__)
+
+
+@app.route("/", methods=["GET"])
+def home():
+    return render_template("index.html")
 
 
 @app.route("/logs", methods=["GET"])
