@@ -35,8 +35,12 @@ Alternatively you can use ```poetry shell``` to activate the environment and run
 ```
 #### `.env`
 Be sure to create this file for local testing and development.
-This file contains environment variables for local development. It is read by `dotenv.load_dotenv()` at the start of `app.py`. 
+<br/> 
+You can use the ```.env.example``` file to help you get started, just rename it to ```.env```
+<br/>
 
+This file contains environment variables for local development. It is read by `dotenv.load_dotenv()` at the start of `app.py`.
+<br/>
 The environment variables are:
 
 - `IS_LOCAL`: Determines whether the app is running in a local development environment. If `True`, the app will read from the local `tests/var/log` directory for log files. If `False` or not set, the app will read from `/var/log`.
