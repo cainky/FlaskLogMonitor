@@ -4,8 +4,8 @@ from enum import Enum
 
 # Load environment variables from .env file
 load_dotenv()
-IS_LOCAL = getenv("IS_LOCAL", "False") == "True"
-LOG_DIRECTORY = "tests/var/log/" if IS_LOCAL else "/var/log/"
+TESTING = getenv("TESTING", "False") == "True"
+LOG_DIRECTORY = "tests/var/log/" if TESTING else "/var/log/"
 
 
 class ErrorMessage(Enum):

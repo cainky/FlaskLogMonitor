@@ -43,7 +43,7 @@ This file contains environment variables for local development. It is read by `d
 <br/>
 The environment variables are:
 
-- `IS_LOCAL`: Determines whether the app is running in a local development environment. If `True`, the app will read from the local `tests/var/log` directory for log files. If `False` or not set, the app will read from `/var/log`.
+- `TESTING`: Determines whether the app is running in a local development environment. If `True`, the app will read from the local `tests/var/log` directory for log files. If `False` or not set, the app will read from `/var/log`.
 
 #### `README.md`
 
@@ -55,7 +55,7 @@ This is the main script for the Flask application. It defines the route for the 
 
 #### `tests/var/log`
 
-This directory is used for local testing of the log reading functionality. When `IS_LOCAL` is `True`, the app will attempt to read log files from this directory. You can place any files you want to test with in this directory.
+This directory is used for local testing of the log reading functionality. When `TESTING` is `True`, the app will attempt to read log files from this directory. You can place any files you want to test with in this directory.
 
 ## Running the Tests
 
