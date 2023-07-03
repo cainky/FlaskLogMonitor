@@ -5,7 +5,7 @@ from enum import Enum
 # Load environment variables from .env file
 load_dotenv()
 TESTING = getenv("TESTING", "False") == "True"
-LOG_DIRECTORY = "tests/var/log/" if TESTING else "/var/log/"
+LOG_DIRECTORY = "tests/log/" if TESTING else "/var/log/"
 
 
 class ErrorMessage(Enum):
