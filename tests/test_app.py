@@ -80,3 +80,49 @@ class TestLogMonitor(LogMonitorTestCase):
         self.assertEqual(response.status_code, HTTPStatus.BAD_REQUEST)
         response = self.make_request_to_endpoint(TEST_LOG_ENDPOINT, {"limit": 1001})
         self.assertEqual(response.status_code, HTTPStatus.BAD_REQUEST)
+
+    def test_non_ascii_characters(self):
+        log_lines = ["test log containing non-ASCII character: ö"]
+        self.log_file_name = self.create_log_file_with_lines(log_lines)
+        response = self.make_request_to_endpoint(
+            TEST_LOG_ENDPOINT,
+            {"filename": self.log_file_name, "term": "ö"}
+        )
+        json_response = response.get_json()
+        lines = json_response.get("lines", [])
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertEqual(lines, log_lines)
+
+    def test_large_files(self):
+        log_lines = ["test log line"] * 10 ** 6
+        self.log_file_name = self.create_log_file_with_lines(log_lines)
+        response = self.make_request_to_endpoint(
+            TEST_LOG_ENDPOINT,
+            {"filename": self.log_file_name, "limit": 10}
+        )
+        json_response = response.get_json()
+        lines = json_response.get("lines", [])
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertEqual(lines, log_lines[-10:])
+
+    def test_large_number_of_requests(self):
+        log_lines = ["test log line"]
+        self.log_file_name = self.create_log_file_with_lines(log_lines)
+        for _ in range(1000):
+            response = self.make_request_to_endpoint(
+                TEST_LOG_ENDPOINT,
+                {"filename": self.log_file_name, "limit": 1}
+            )
+            self.assertEqual(response.status_code, HTTPStatus.OK)
+
+    def test_multi_line_logs(self):
+        log_lines = ["test log line 1", "", "test log line 2"]
+        self.log_file_name = self.create_log_file_with_lines(log_lines)
+        response = self.make_request_to_endpoint(
+            TEST_LOG_ENDPOINT,
+            {"filename": self.log_file_name, "limit": 3}
+        )
+        json_response = response.get_json()
+        lines = json_response.get("lines", [])
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertEqual(lines, ["test log line 1", "", "test log line 2"])
