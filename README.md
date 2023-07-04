@@ -21,6 +21,20 @@ poetry run python app.py
 ```
 Alternatively you can use ```poetry shell``` to activate the environment and run python commands as you normally would: ```python app.py```
 
+## Usage
+
+Make a GET request to `/logs` to retrieve logs from `/var/log`. You can use the following query parameters:
+
+- `filename`: Specify a filename within `/var/log`.
+- `term`: Filter results based on this text/keyword.
+- `limit`: Specify the last n number of matching entries to retrieve within the log.
+
+For example:
+
+```bash
+curl http://localhost:5000/logs?filename=syslog&term=error&limit=5
+```
+
 
 ## Project Files and Directories
 ```
