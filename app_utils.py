@@ -5,14 +5,6 @@ from os import SEEK_END
 from typing.io import IO
 
 
-def get_request_params(request: Request) -> Tuple[str, str, int]:
-    filename = request.args.get("filename", default="syslog", type=str)
-    search_term = request.args.get("term", default="", type=str)
-    lines_limit = request.args.get("limit", default=50, type=int)
-
-    return filename, search_term, lines_limit
-
-
 def is_filename_valid(filename: str) -> bool:
     """
     Validates a filename for path traversal and absolute paths.
