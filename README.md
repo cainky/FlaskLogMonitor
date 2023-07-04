@@ -4,7 +4,7 @@ This project offers a solution for on-demand log monitoring across multiple unix
 
 ## Installation and Setup
 
-1. Install Python 3.10.6
+1. Install Python 3.10.x
 2. [Install Poetry](https://python-poetry.org/docs/#installation) - Poetry is used for dependency management.
 
 ```bash

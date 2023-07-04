@@ -23,3 +23,5 @@ jobs:
     - name: Run tests
       run: |
         poetry run python -m unittest
+      env:
+        TESTING: True
