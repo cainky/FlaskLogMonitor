@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request, Response
+from flask import Flask
 from views.log_view import get_logs
 from views.home_view import home
 

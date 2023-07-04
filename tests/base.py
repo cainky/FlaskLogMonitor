@@ -6,7 +6,7 @@ from pathlib import Path
 from flask import Response
 
 from app import create_app
-from constants import LOG_DIRECTORY
+from constants import Config
 
 
 class LogMonitorTestCase(unittest.TestCase):
@@ -37,10 +37,12 @@ class LogMonitorTestCase(unittest.TestCase):
     """
 
     def setUp(self):
-        self.app = create_app({"TESTING": True, "LOG_DIRECTORY": LOG_DIRECTORY})
+        config = Config(testing=True)
+        self.app = create_app(config.__dict__)
         self.client = self.app.test_client()
         self.db_fd = None
         self.full_path = None
+        self.log_directory = config.LOG_DIRECTORY
 
     def tearDown(self):
         if self.db_fd:
@@ -49,7 +51,7 @@ class LogMonitorTestCase(unittest.TestCase):
             os.unlink(self.full_path)
 
     def create_log_file_with_lines(self, lines: list[str]) -> str:
-        self.db_fd, self.full_path = tempfile.mkstemp(dir=LOG_DIRECTORY)
+        self.db_fd, self.full_path = tempfile.mkstemp(dir=self.log_directory)
         with open(self.full_path, "w") as f:
             for index, line in enumerate(lines):
                 if index == len(lines) - 1:

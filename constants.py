@@ -4,8 +4,11 @@ from enum import Enum
 
 # Load environment variables from .env file
 load_dotenv()
-TESTING = getenv("TESTING", "False") == "True"
-LOG_DIRECTORY = "tests/log/" if TESTING else "/var/log/"
+
+class Config:
+    def __init__(self, testing=None, log_directory=None):
+        self.TESTING = testing if testing is not None else (getenv('TESTING', 'False') == 'True')
+        self.LOG_DIRECTORY = log_directory if log_directory is not None else ('tests/log/' if self.TESTING else '/var/log/')
 
 
 class ErrorMessage(Enum):
