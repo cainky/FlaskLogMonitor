@@ -1,14 +1,21 @@
+from os.path import join, dirname
+
 from dotenv import load_dotenv
 from os import getenv
 from enum import Enum
 
-# Load environment variables from .env file
-load_dotenv()
 
 class Config:
     def __init__(self, testing=None, log_directory=None):
-        self.TESTING = testing if testing is not None else (getenv('TESTING', 'False') == 'True')
-        self.LOG_DIRECTORY = log_directory if log_directory is not None else ('tests/log/' if self.TESTING else '/var/log/')
+        load_dotenv(join(dirname(__file__), ".env"))
+        self.TESTING = (
+            testing if testing is True else (getenv("TESTING", "False") == "True")
+        )
+        self.LOG_DIRECTORY = (
+            log_directory
+            if log_directory is not None
+            else ("tests/log/" if self.TESTING else "/var/log/")
+        )
 
 
 class ErrorMessage(Enum):
