@@ -1,4 +1,4 @@
-# FlaskLogMonitor
+# UnixLogMonitor
 
 This project offers a solution for on-demand log monitoring across multiple unix-based servers. With this service, it is no longer necessary to individually access each server and manually open the log files located at /var/log. Instead, by sending a simple REST request to a server, you can easily retrieve its /var/log files. This makes tracking and debugging system events considerably more efficient and user-friendly.
 
