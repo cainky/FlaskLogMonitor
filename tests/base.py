@@ -40,25 +40,23 @@ class LogMonitorTestCase(unittest.TestCase):
         config = Config(testing=True)
         self.app = create_app(config.__dict__)
         self.client = self.app.test_client()
-        self.db_fd = None
-        self.full_path = None
         self.log_directory = config.LOG_DIRECTORY
 
+        # Create a unique temporary file for each test
+        self.db_fd, self.full_path = tempfile.mkstemp(dir=self.log_directory)
+        self.log_file_name = Path(self.full_path).name
+
     def tearDown(self):
-        if self.db_fd:
-            os.close(self.db_fd)
-        if self.full_path:
-            os.unlink(self.full_path)
+        os.close(self.db_fd)
+        os.unlink(self.full_path)
 
     def create_log_file_with_lines(self, lines: list[str]) -> str:
-        self.db_fd, self.full_path = tempfile.mkstemp(dir=self.log_directory)
-        with open(self.full_path, "w") as f:
+        with open(self.full_path, "w", encoding='utf-8') as f:
             for index, line in enumerate(lines):
                 if index == len(lines) - 1:
                     f.write(line)
                 else:
                     f.write(f"{line}\n")
-        self.log_file_name = Path(self.full_path).name
         return self.log_file_name
 
     def make_request_to_endpoint(self, endpoint: str, params: dict = None) -> Response:

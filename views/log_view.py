@@ -45,5 +45,5 @@ def get_logs() -> tuple[Response, HTTPStatus]:
         )
 
     lines = get_file_lines(filepath, search_term, lines_limit)
-
+    
     return jsonify(lines=lines), HTTPStatus.OK

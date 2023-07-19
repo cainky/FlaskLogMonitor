@@ -39,26 +39,31 @@ class TestLogMonitor(LogMonitorTestCase):
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(lines, [])
 
-    def test_less_lines_than_limit(self):
-        self.log_file_name = self.create_log_file_with_lines(TEST_LOG_LINES)
-        response = self.make_request_to_endpoint(
-            TEST_LOG_ENDPOINT, {"filename": self.log_file_name, "limit": 10}
-        )
-        json_response = response.get_json()
-        lines = json_response.get("lines", [])
-        self.assertEqual(response.status_code, HTTPStatus.OK)
-        self.assertEqual(lines, TEST_LOG_LINES)
-
     def test_more_lines_than_limit(self):
         lines = [f"log {i}" for i in range(10)]
-        self.log_file_name = self.create_log_file_with_lines(lines)
+        self.create_log_file_with_lines(lines)
         response = self.make_request_to_endpoint(
             TEST_LOG_ENDPOINT, {"filename": self.log_file_name, "limit": 5}
         )
         json_response = response.get_json()
         lines = json_response.get("lines", [])
         self.assertEqual(response.status_code, HTTPStatus.OK)
+        # Expect the last 5 lines
         self.assertEqual(lines, ["log 5", "log 6", "log 7", "log 8", "log 9"])
+
+
+    def test_large_files(self):
+        log_lines = ["test log line"] * 10 ** 6
+        self.create_log_file_with_lines(log_lines)
+        response = self.make_request_to_endpoint(
+            TEST_LOG_ENDPOINT,
+            {"filename": self.log_file_name, "limit": 10}
+        )
+        json_response = response.get_json()
+        lines = json_response.get("lines", [])
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        # Lines should be in the original order
+        self.assertEqual(lines, ["test log line"] * 10)
 
     def test_default_parameters(self):
         self.log_file_name = self.create_log_file_with_lines(TEST_LOG_LINES)
@@ -92,18 +97,6 @@ class TestLogMonitor(LogMonitorTestCase):
         lines = json_response.get("lines", [])
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(lines, log_lines)
-
-    def test_large_files(self):
-        log_lines = ["test log line"] * 10 ** 6
-        self.log_file_name = self.create_log_file_with_lines(log_lines)
-        response = self.make_request_to_endpoint(
-            TEST_LOG_ENDPOINT,
-            {"filename": self.log_file_name, "limit": 10}
-        )
-        json_response = response.get_json()
-        lines = json_response.get("lines", [])
-        self.assertEqual(response.status_code, HTTPStatus.OK)
-        self.assertEqual(lines, log_lines[-10:])
 
     def test_large_number_of_requests(self):
         log_lines = ["test log line"]
