@@ -60,6 +60,5 @@ class LogMonitorTestCase(unittest.TestCase):
         return self.log_file_name
 
     def make_request_to_endpoint(self, endpoint: str, params: dict = None) -> Response:
-        if params is None:
-            params = {}
-        return self.client.get(endpoint, query_string=params)
+        response = self.client.get(endpoint, query_string=params)
+        return response

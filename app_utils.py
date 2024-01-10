@@ -88,7 +88,7 @@ def tail(filename: str, lines_limit: int = 50, block_size: int = 1024) -> List[s
     """
 
     lines = []
-    with open(filename, "r", encoding='utf-8') as f:
+    with open(filename, "r", encoding="utf-8") as f:
         # Seek to the end of the file.
         f.seek(0, SEEK_END)
         # Get the current position in the file.
@@ -104,9 +104,7 @@ def tail(filename: str, lines_limit: int = 50, block_size: int = 1024) -> List[s
         return lines[-lines_limit:]
 
 
-def read_block(
-    file: IO, block_end_byte: int, block_size: int
-) -> Tuple[List[str], int]:
+def read_block(file: IO, block_end_byte: int, block_size: int) -> Tuple[List[str], int]:
     """
     Reads a block from the end of a file and returns the lines in the block.
 
