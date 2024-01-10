@@ -11,7 +11,8 @@ from app_utils import (
 )
 from flask import current_app as app
 
-from werkzeug.utils import secure_filename
+from werkzeug.utils import secure_filename as get_secure_filename
+
 
 def get_logs() -> tuple[Response, HTTPStatus]:
     """
@@ -37,13 +38,19 @@ def get_logs() -> tuple[Response, HTTPStatus]:
     filename = request.args.get("filename", default="syslog", type=str)
     search_term = request.args.get("term", default="", type=str)
     lines_limit = request.args.get("limit", default=50, type=int)
-    
+
     if not is_filename_valid(filename):
         return (
             jsonify(error=ErrorMessage.INVALID_FILENAME.value),
             HTTPStatus.BAD_REQUEST,
         )
-    filename = secure_filename(filename)
+
+    secure_filename = get_secure_filename(filename)
+    if not secure_filename or secure_filename != filename:
+        return (
+            jsonify(error=ErrorMessage.INVALID_FILENAME.value),
+            HTTPStatus.BAD_REQUEST,
+        )
 
     if not is_search_term_valid(search_term):
         return (
@@ -56,13 +63,13 @@ def get_logs() -> tuple[Response, HTTPStatus]:
             HTTPStatus.BAD_REQUEST,
         )
 
-    filepath = log_directory + filename
+    filepath = path.join(log_directory, secure_filename)
     if not path.isfile(filepath):
         return (
-            jsonify(error=f"File not found: {log_directory}{filename} does not exist"),
+            jsonify(error=f"File not found: {filepath} does not exist"),
             HTTPStatus.NOT_FOUND,
         )
 
     lines = get_file_lines(filepath, search_term, lines_limit)
-    
+
     return jsonify(lines=lines), HTTPStatus.OK

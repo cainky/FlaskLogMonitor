@@ -51,7 +51,7 @@ class LogMonitorTestCase(unittest.TestCase):
         os.unlink(self.full_path)
 
     def create_log_file_with_lines(self, lines: list[str]) -> str:
-        with open(self.full_path, "w", encoding='utf-8') as f:
+        with open(self.full_path, "w", encoding="utf-8") as f:
             for index, line in enumerate(lines):
                 if index == len(lines) - 1:
                     f.write(line)
@@ -62,5 +62,4 @@ class LogMonitorTestCase(unittest.TestCase):
     def make_request_to_endpoint(self, endpoint: str, params: dict = None) -> Response:
         if params is None:
             params = {}
-        with self.app.test_client() as client:
-            return client.get(endpoint, query_string=params)
+        return self.client.get(endpoint, query_string=params)

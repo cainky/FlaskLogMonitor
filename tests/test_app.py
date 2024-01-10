@@ -39,7 +39,7 @@ class TestLogMonitor(LogMonitorTestCase):
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(lines, [])
 
-    def test_more_lines_than_limit(self):
+    def test_lines_limit(self):
         lines = [f"log {i}" for i in range(10)]
         self.create_log_file_with_lines(lines)
         response = self.make_request_to_endpoint(
@@ -51,13 +51,11 @@ class TestLogMonitor(LogMonitorTestCase):
         # Expect the last 5 lines
         self.assertEqual(lines, ["log 5", "log 6", "log 7", "log 8", "log 9"])
 
-
     def test_large_files(self):
-        log_lines = ["test log line"] * 10 ** 6
+        log_lines = ["test log line"] * 10**6
         self.create_log_file_with_lines(log_lines)
         response = self.make_request_to_endpoint(
-            TEST_LOG_ENDPOINT,
-            {"filename": self.log_file_name, "limit": 10}
+            TEST_LOG_ENDPOINT, {"filename": self.log_file_name, "limit": 10}
         )
         json_response = response.get_json()
         lines = json_response.get("lines", [])
@@ -90,8 +88,7 @@ class TestLogMonitor(LogMonitorTestCase):
         log_lines = ["test log containing non-ASCII character: ö"]
         self.log_file_name = self.create_log_file_with_lines(log_lines)
         response = self.make_request_to_endpoint(
-            TEST_LOG_ENDPOINT,
-            {"filename": self.log_file_name, "term": "ö"}
+            TEST_LOG_ENDPOINT, {"filename": self.log_file_name, "term": "ö"}
         )
         json_response = response.get_json()
         lines = json_response.get("lines", [])
@@ -103,8 +100,7 @@ class TestLogMonitor(LogMonitorTestCase):
         self.log_file_name = self.create_log_file_with_lines(log_lines)
         for _ in range(1000):
             response = self.make_request_to_endpoint(
-                TEST_LOG_ENDPOINT,
-                {"filename": self.log_file_name, "limit": 1}
+                TEST_LOG_ENDPOINT, {"filename": self.log_file_name, "limit": 1}
             )
             self.assertEqual(response.status_code, HTTPStatus.OK)
 
@@ -112,8 +108,7 @@ class TestLogMonitor(LogMonitorTestCase):
         log_lines = ["test log line 1", "", "test log line 2"]
         self.log_file_name = self.create_log_file_with_lines(log_lines)
         response = self.make_request_to_endpoint(
-            TEST_LOG_ENDPOINT,
-            {"filename": self.log_file_name, "limit": 3}
+            TEST_LOG_ENDPOINT, {"filename": self.log_file_name, "limit": 3}
         )
         json_response = response.get_json()
         lines = json_response.get("lines", [])
